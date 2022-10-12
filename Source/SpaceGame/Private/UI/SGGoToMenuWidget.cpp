@@ -3,6 +3,8 @@
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
 #include "SGGameInstance.h"
+#include "Sound/SoundCue.h"
+#include "Components/AudioComponent.h"
 
 
 void USGGoToMenuWidget::NativeOnInitialized()
@@ -20,6 +22,13 @@ void USGGoToMenuWidget::OnGoToMenu()
 	if (!GetWorld())
 		return;
 
+	// play sound click button
+	UAudioComponent*  audioComponent = UGameplayStatics::SpawnSound2D(GetWorld(), ClickSound);
+	audioComponent->OnAudioFinished.AddDynamic(this, &USGGoToMenuWidget::OnChangeLevel);
+}
+
+void USGGoToMenuWidget::OnChangeLevel()
+{
 	const auto SGGameInstance = GetWorld()->GetGameInstance<USGGameInstance>();
 	if (!SGGameInstance)
 		return;

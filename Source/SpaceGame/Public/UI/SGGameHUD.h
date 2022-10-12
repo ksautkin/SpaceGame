@@ -19,14 +19,13 @@ protected:
 	// hud игрока
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
 	TSubclassOf<UUserWidget> PlayerHUDWidgetClass;
-
 	// виджет паузы
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
 	TSubclassOf<UUserWidget> PauseWidgetClass;
-
 	// виджет конца игры
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
 	TSubclassOf<UUserWidget> GameOverWidgetClass;
+
 
 	virtual void BeginPlay() override;
 

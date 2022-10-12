@@ -31,12 +31,18 @@ protected:
 	// минимальна€ задержка времени спавна противника 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Spawn")
 	float MinTimeSpawn = 1.0f;
+	// значеине на которое уменьшаетс€ врем€ спвана  
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Spawn")
+	float ValDecreaseTimeSpawn = 0.01f;
 	// максимальна€ скорость противника
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Spawn")
 	float MaxSpeedEnemy = 300.0f;
 	// максимальна€ скорость противника
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Spawn")
 	float MinSpeedEnemy = 100.0f;
+	// значеине на которое увеличваетс€ скорость противника  
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Spawn")
+	float ValIncreaseTimeSpawn = 5.0f;
 	// актор который спавонитс€
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Spawn")
 	TSubclassOf<ASGMeteorite> EnemySpawnType;

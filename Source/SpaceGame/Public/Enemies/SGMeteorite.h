@@ -7,6 +7,8 @@
 class USceneComponent;
 class UStaticMeshComponent;
 class URotatingMovementComponent;
+class UNiagaraSystem;
+class USoundCue;
 
 UCLASS()
 class SPACEGAME_API ASGMeteorite : public AActor
@@ -34,6 +36,12 @@ protected:
 	float MinScaleMeteorite = 1.0f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Scale")
 	float MaxScaleMeteorite = 5.0f;
+	// эффект уничтожения 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Destroy")
+	UNiagaraSystem* TraceFX;
+	// sound destroy
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
+	USoundCue* DestroySound;
  
 	virtual void BeginPlay() override;
 	// фунция пересечения метеорита и корабля 
@@ -42,5 +50,6 @@ protected:
 
 public:	
 	virtual void Tick(float DeltaTime) override;
+	bool Destroy(bool bNetForce = false, bool bShouldModifyLevel = true);
 
 };

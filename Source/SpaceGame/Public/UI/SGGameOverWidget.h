@@ -5,6 +5,7 @@
 #include "SGGameOverWidget.generated.h"
 
 class UButton;
+class USoundCue;
 
 UCLASS()
 class SPACEGAME_API USGGameOverWidget : public UUserWidget
@@ -14,10 +15,15 @@ class SPACEGAME_API USGGameOverWidget : public UUserWidget
 protected:
 	UPROPERTY(meta = (BindWidget))
 	UButton* ResetLevelButton;
+	// sound click
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
+	USoundCue* ClickSound;
 
 	virtual void NativeOnInitialized() override;
 
 private:
 	UFUNCTION()
 	void OnResetLevel();
+	UFUNCTION()
+	void OnChangeLevel();
 };

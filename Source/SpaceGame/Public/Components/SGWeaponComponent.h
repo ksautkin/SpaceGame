@@ -4,6 +4,8 @@
 #include "Components/ActorComponent.h"
 #include "SGWeaponComponent.generated.h"
 
+class UNiagaraSystem;
+class USoundCue;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SPACEGAME_API USGWeaponComponent : public UActorComponent
@@ -27,12 +29,24 @@ protected:
 	// время перезарядки 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Blaster")
 	float TimeReload = 0.1f;
+	// эффект выстрела 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Blaster")
+	UNiagaraSystem* TraceFX;
+	// имя точки кненой выстрела 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Blaster")
+	FString TraceTargetName = "TraceTarget";
+	// sound fire
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
+	USoundCue* FireSound;
+
 
 	virtual void BeginPlay() override;
 	// делает выстрел 
 	void MakeShot();
 	// перезарядка бластера 
 	void ReloadBlaster();
+	// спавн эффекта вытсрела 
+	void SpawnTrace(const FVector& TraceStart, const FVector& TraceEnd);
 
 private:
 	// текущее кол-во выстрелов

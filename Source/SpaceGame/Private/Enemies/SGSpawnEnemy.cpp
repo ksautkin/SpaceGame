@@ -29,8 +29,14 @@ void ASGSpawnEnemy::StartSpawnEnemy()
 	// спавн метеорита с задержкой 
 	GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &ASGSpawnEnemy::StartSpawnEnemy, DelayTime, false);
 	// увеличение скорости каждый спавн 
-	MinSpeedEnemy += 5.0f;
-	MaxSpeedEnemy += 5.0f;
+	ValIncreaseTimeSpawn += 5.0f;
+	ValIncreaseTimeSpawn += 5.0f;
+	// уменьшение времени задрежки спавана 
+	if (MinTimeSpawn > 0.1f)
+	{
+		MaxTimeSpawn -= ValDecreaseTimeSpawn*10;
+		MinTimeSpawn -= ValDecreaseTimeSpawn;
+	}
 }
 
 void ASGSpawnEnemy::StopSpawnEnemy()

@@ -4,6 +4,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "SGGameInstance.h"
+#include "Sound/SoundCue.h"
+#include "Components/AudioComponent.h"
 
 
 void USGMenuUserWidget::NativeOnInitialized()
@@ -26,6 +28,13 @@ void USGMenuUserWidget::OnStartGame()
 	if (!GetWorld())
 		return;
 
+	// play sound click button
+	UAudioComponent* audioComponent = UGameplayStatics::SpawnSound2D(GetWorld(), ClickSound);
+	audioComponent->OnAudioFinished.AddDynamic(this, &USGMenuUserWidget::OnChangeLevel);
+}
+
+void USGMenuUserWidget::OnChangeLevel()
+{
 	const auto SGGameInstance = GetWorld()->GetGameInstance<USGGameInstance>();
 	if (!SGGameInstance)
 		return;
@@ -35,6 +44,7 @@ void USGMenuUserWidget::OnStartGame()
 
 	UGameplayStatics::OpenLevel(this, FName(SGGameInstance->GetStartupLevelName()));
 }
+
 
 void USGMenuUserWidget::OnQuitGame()
 {

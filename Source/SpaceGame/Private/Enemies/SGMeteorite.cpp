@@ -3,7 +3,10 @@
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/RotatingMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
-
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
+#include "Sound/SoundCue.h"
+#include "Kismet/GameplayStatics.h"
 
 
 ASGMeteorite::ASGMeteorite()
@@ -54,5 +57,16 @@ void ASGMeteorite::Tick(float DeltaTime)
 	// перемещение актора
 	FVector DeltaLocation = DeltaTime*SpeedMeteorite*FVector(-1.0f,0.0f,0.0f);
 	AddActorWorldOffset(DeltaLocation);
+}
+
+bool ASGMeteorite::Destroy(bool bNetForce, bool bShouldModifyLevel)
+{
+	bool destored = Super::Destroy(bNetForce, bShouldModifyLevel);
+	// play sound explosion
+	UGameplayStatics::SpawnSoundAtLocation(GetWorld(),DestroySound, GetActorLocation(), GetActorRotation());
+	// spawn destroy effect
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), TraceFX, GetActorLocation());
+
+	return destored;
 }
 

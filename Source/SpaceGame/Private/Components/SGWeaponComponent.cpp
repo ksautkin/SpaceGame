@@ -3,6 +3,11 @@
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
 #include "GameFramework/Character.h"
+#include "Enemies/SGMeteorite.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
+#include "Sound/SoundCue.h"
+#include "Kismet/GameplayStatics.h"
 
 
 USGWeaponComponent::USGWeaponComponent()
@@ -76,25 +81,31 @@ void USGWeaponComponent::MakeShot()
 	const FVector LeftBlasterTraceEnd = LeftBlasterTraceStart+ LeftBlasterShotDirection *TraceMaxDistance;
 	const FVector RightBlasterTraceEnd = RightBlasterTraceStart+ RightBlasterShotDirection *TraceMaxDistance;
 	// отрисовка дебаглайна
-	DrawDebugLine(GetWorld(), LeftBlasterTraceStart, LeftBlasterTraceEnd, FColor::Red, false, 3.0f, 0, 3.0f);
-	DrawDebugLine(GetWorld(), RightBlasterTraceStart, RightBlasterTraceEnd, FColor::Red, false, 3.0f, 0, 3.0f);
+	//DrawDebugLine(GetWorld(), LeftBlasterTraceStart, LeftBlasterTraceEnd, FColor::Red, false, 3.0f, 0, 3.0f);
+	//DrawDebugLine(GetWorld(), RightBlasterTraceStart, RightBlasterTraceEnd, FColor::Red, false, 3.0f, 0, 3.0f);
+	SpawnTrace(LeftBlasterTraceStart, LeftBlasterTraceEnd);
+	SpawnTrace(RightBlasterTraceStart, RightBlasterTraceEnd);
 	
 	FHitResult HitLeftResult, HitRightResult;
 	GetWorld()->LineTraceSingleByChannel(HitLeftResult, LeftBlasterTraceStart, LeftBlasterTraceEnd, ECollisionChannel::ECC_Visibility);
 	GetWorld()->LineTraceSingleByChannel(HitRightResult, RightBlasterTraceStart, RightBlasterTraceEnd, ECollisionChannel::ECC_Visibility);
 
+	// play sound fire
+	UGameplayStatics::SpawnSoundAttached(FireSound, CharacterMesh, "LeftBlasterSocket");
+	UGameplayStatics::SpawnSoundAttached(FireSound, CharacterMesh, "RightBlasterSocket");
+
 	// уничтожение объектов по кторому был нанасен урон  
 	if (HitLeftResult.bBlockingHit)
 	{
-		DrawDebugSphere(GetWorld(), HitLeftResult.ImpactPoint, 10.0f, 24, FColor::Red, false, 5.0f);
-		auto HitActor = HitLeftResult.GetActor();
+		//DrawDebugSphere(GetWorld(), HitLeftResult.ImpactPoint, 10.0f, 24, FColor::Red, false, 5.0f);
+		ASGMeteorite* HitActor = Cast<ASGMeteorite>(HitLeftResult.GetActor());
 		if (HitActor)
 			HitActor->Destroy();
 	}
 	if (HitRightResult.bBlockingHit)
 	{
-		DrawDebugSphere(GetWorld(), HitRightResult.ImpactPoint, 10.0f, 24, FColor::Red, false, 5.0f);
-		auto HitActor = HitRightResult.GetActor();
+		//DrawDebugSphere(GetWorld(), HitRightResult.ImpactPoint, 10.0f, 24, FColor::Red, false, 5.0f);
+		ASGMeteorite* HitActor = Cast<ASGMeteorite>(HitRightResult.GetActor());
 		if (HitActor)
 			HitActor->Destroy();
 	}
@@ -111,5 +122,17 @@ void USGWeaponComponent::ReloadBlaster()
 	if (CurrentAmountShots == MaxAmountShots && GetOwner()->GetWorldTimerManager().IsTimerActive(ReloadTimerHandle))
 	{
 		GetOwner()->GetWorldTimerManager().PauseTimer(ReloadTimerHandle);
+	}
+}
+
+void USGWeaponComponent::SpawnTrace(const FVector& TraceStart, const FVector& TraceEnd)
+{
+	const auto TraceFXComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), TraceFX, TraceStart);
+	if (TraceFXComponent)
+	{
+		if (TraceFXComponent)
+		{
+			TraceFXComponent->SetNiagaraVariableVec3(TraceTargetName, TraceEnd);
+		}
 	}
 }
