@@ -19,6 +19,7 @@ ASGMeteorite::ASGMeteorite()
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("StaticMeshComponent");
 	MeshComponent->SetupAttachment(GetRootComponent());
 	MeshComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
+	MeshComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Overlap);
 
 	RotatingMovementComponent = CreateDefaultSubobject<URotatingMovementComponent>("RotatingMovementComponent");
 
@@ -45,9 +46,18 @@ void ASGMeteorite::OnConstruction(const FTransform& Transform)
 
 void ASGMeteorite::OnBeginOverllap(AActor* OverlappedActor, AActor* OtherActor)
 {
-	// нанесение урона игроку
-	OtherActor->TakeDamage(10.0f, FDamageEvent(), nullptr, this);
-	this->Destroy();
+	if (ASGMeteorite* meteorite = Cast<ASGMeteorite>(OtherActor))
+	{
+		// если столкновение то увеличение скорости 
+		float NewSpeed = meteorite->GetSpeedMeteorite()+(SpeedMeteorite-meteorite->GetSpeedMeteorite())+5.0f;
+		meteorite->SetSpeedMeteorite(NewSpeed);
+	}
+	else
+	{
+		// нанесение урона игроку
+		OtherActor->TakeDamage(10.0f, FDamageEvent(), nullptr, this);
+		this->Destroy();
+	}
 }
 
 void ASGMeteorite::Tick(float DeltaTime)
