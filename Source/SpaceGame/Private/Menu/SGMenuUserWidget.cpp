@@ -21,6 +21,11 @@ void USGMenuUserWidget::NativeOnInitialized()
 	{
 		QuitGameButton->OnClicked.AddDynamic(this, &USGMenuUserWidget::OnQuitGame);
 	}
+
+	if (SetNamePlayerWidget)
+	{
+		SetNamePlayerWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
 }
 
 void USGMenuUserWidget::OnStartGame()
@@ -30,19 +35,25 @@ void USGMenuUserWidget::OnStartGame()
 
 	// play sound click button
 	UAudioComponent* audioComponent = UGameplayStatics::SpawnSound2D(GetWorld(), ClickSound);
-	audioComponent->OnAudioFinished.AddDynamic(this, &USGMenuUserWidget::OnChangeLevel);
+	audioComponent->OnAudioFinished.AddDynamic(this, &USGMenuUserWidget::OnSetNamePlayer);
 }
 
-void USGMenuUserWidget::OnChangeLevel()
+void USGMenuUserWidget::OnSetNamePlayer()
 {
-	const auto SGGameInstance = GetWorld()->GetGameInstance<USGGameInstance>();
-	if (!SGGameInstance)
-		return;
+	if (SetNamePlayerWidget)
+	{
+		SetNamePlayerWidget->SetVisibility(ESlateVisibility::Visible);
+	}
 
-	if (SGGameInstance->GetStartupLevelName().IsNone())
-		return;
+	if (StartGameButton)
+	{
+		StartGameButton->SetVisibility(ESlateVisibility::Hidden);
+	}
 
-	UGameplayStatics::OpenLevel(this, FName(SGGameInstance->GetStartupLevelName()));
+	if (QuitGameButton)
+	{
+		QuitGameButton->SetVisibility(ESlateVisibility::Hidden);
+	}
 }
 
 

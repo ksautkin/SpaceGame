@@ -13,5 +13,8 @@ class SPACEGAME_API USGPlayerHUDWidget : public UUserWidget
 public:
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	float GetAmountShotsPercent() const;
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+	int32 GetPlayerStat() const;
 	
 };

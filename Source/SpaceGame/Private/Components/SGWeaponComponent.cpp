@@ -8,6 +8,7 @@
 #include "NiagaraComponent.h"
 #include "Sound/SoundCue.h"
 #include "Kismet/GameplayStatics.h"
+#include "Player/SGPlayerState.h"
 
 
 USGWeaponComponent::USGWeaponComponent()
@@ -70,6 +71,8 @@ void USGWeaponComponent::MakeShot()
 	if (!CharacterMesh)
 		return;	
 
+	ASGPlayerState* PlayerStateOwner = Cast<ASGPlayerState>(CharacterOwner->GetPlayerState());
+
 	// получение сокетов меша 
 	const FTransform LeftBlasterSocketTransform = CharacterMesh->GetSocketTransform("LeftBlasterSocket");
 	const FTransform RightBlasterSocketTransform = CharacterMesh->GetSocketTransform("RightBlasterSocket");
@@ -101,6 +104,11 @@ void USGWeaponComponent::MakeShot()
 		ASGMeteorite* HitActor = Cast<ASGMeteorite>(HitLeftResult.GetActor());
 		if (HitActor)
 			HitActor->Destroy();
+
+		if (PlayerStateOwner)
+		{
+			PlayerStateOwner->AddMeteoriteDestroyed();
+		}
 	}
 	if (HitRightResult.bBlockingHit)
 	{
@@ -108,6 +116,11 @@ void USGWeaponComponent::MakeShot()
 		ASGMeteorite* HitActor = Cast<ASGMeteorite>(HitRightResult.GetActor());
 		if (HitActor)
 			HitActor->Destroy();
+
+		if (PlayerStateOwner)
+		{
+			PlayerStateOwner->AddMeteoriteDestroyed();
+		}
 	}
 	// уменьшение выстрелов 
 	if (CurrentAmountShots - 2 >= 0)

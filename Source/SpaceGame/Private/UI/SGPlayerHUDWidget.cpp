@@ -1,5 +1,6 @@
 #include "UI/SGPlayerHUDWidget.h"
 #include "Components/SGWeaponComponent.h"
+#include "Player/SGPlayerState.h"
 
 
 float USGPlayerHUDWidget::GetAmountShotsPercent() const
@@ -16,4 +17,18 @@ float USGPlayerHUDWidget::GetAmountShotsPercent() const
 	// высчитвание процента 
 	float percent = float(WeaponComponent->GetCurrentAmountShots())/float(WeaponComponent->GetMaxAmountShots());
 	return percent;
+}
+
+int32 USGPlayerHUDWidget::GetPlayerStat() const
+{
+	const auto Player = GetOwningPlayerPawn();
+	if (!Player)
+		return 0;
+
+	ASGPlayerState* PlayerStateOwner = Cast<ASGPlayerState>(Player->GetPlayerState());
+	if (PlayerStateOwner)
+	{
+		return PlayerStateOwner->GetNumberMeteoriteDestroyed();
+	}
+	return 0;
 }
