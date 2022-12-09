@@ -6,6 +6,7 @@
 #include "SGGameInstance.h"
 #include "Sound/SoundCue.h"
 #include "Components/AudioComponent.h"
+#include "SGSaveGame.h"
 
 
 void USGMenuUserWidget::NativeOnInitialized()

@@ -30,4 +30,7 @@ public:
 	void SetGameState(ESGGameState State);
 	// завершение игры 
 	void GameOver();
+
+private:
+	void SaveRecord();
 };

@@ -4,6 +4,7 @@
 #include "Sound/SoundCue.h"
 #include "Components/AudioComponent.h"
 
+
 void USGGameOverWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
