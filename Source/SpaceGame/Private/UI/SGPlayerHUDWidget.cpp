@@ -1,6 +1,7 @@
 #include "UI/SGPlayerHUDWidget.h"
 #include "Components/SGWeaponComponent.h"
 #include "Player/SGPlayerState.h"
+#include "SGGameInstance.h"
 
 
 float USGPlayerHUDWidget::GetAmountShotsPercent() const
@@ -31,4 +32,13 @@ int32 USGPlayerHUDWidget::GetPlayerStat() const
 		return PlayerStateOwner->GetNumberMeteoriteDestroyed();
 	}
 	return 0;
+}
+
+int32 USGPlayerHUDWidget::GetRecord() const
+{
+	const auto GameInstance = GetWorld()->GetGameInstance<USGGameInstance>();
+	if (!GameInstance)
+		return 0;
+
+	return GameInstance->GetRecordMeteoriteDestroyed();
 }

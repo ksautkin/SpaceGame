@@ -16,5 +16,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	int32 GetPlayerStat() const;
-	
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+	int32 GetRecord() const;
 };

@@ -6,6 +6,7 @@
 #include "SGGameInstance.h"
 #include "Sound/SoundCue.h"
 #include "Components/AudioComponent.h"
+#include "SGSaveGame.h"
 
 
 void USGMenuUserWidget::NativeOnInitialized()
@@ -21,11 +22,6 @@ void USGMenuUserWidget::NativeOnInitialized()
 	{
 		QuitGameButton->OnClicked.AddDynamic(this, &USGMenuUserWidget::OnQuitGame);
 	}
-
-	if (SetNamePlayerWidget)
-	{
-		SetNamePlayerWidget->SetVisibility(ESlateVisibility::Hidden);
-	}
 }
 
 void USGMenuUserWidget::OnStartGame()
@@ -35,25 +31,19 @@ void USGMenuUserWidget::OnStartGame()
 
 	// play sound click button
 	UAudioComponent* audioComponent = UGameplayStatics::SpawnSound2D(GetWorld(), ClickSound);
-	audioComponent->OnAudioFinished.AddDynamic(this, &USGMenuUserWidget::OnSetNamePlayer);
+	audioComponent->OnAudioFinished.AddDynamic(this, &USGMenuUserWidget::OnChangeLevel);
 }
 
-void USGMenuUserWidget::OnSetNamePlayer()
+void USGMenuUserWidget::OnChangeLevel()
 {
-	if (SetNamePlayerWidget)
-	{
-		SetNamePlayerWidget->SetVisibility(ESlateVisibility::Visible);
-	}
+	const auto SGGameInstance = GetWorld()->GetGameInstance<USGGameInstance>();
+	if (!SGGameInstance)
+		return;
 
-	if (StartGameButton)
-	{
-		StartGameButton->SetVisibility(ESlateVisibility::Hidden);
-	}
+	if (SGGameInstance->GetStartupLevelName().IsNone())
+		return;
 
-	if (QuitGameButton)
-	{
-		QuitGameButton->SetVisibility(ESlateVisibility::Hidden);
-	}
+	UGameplayStatics::OpenLevel(this, FName(SGGameInstance->GetStartupLevelName()));
 }
 
 
